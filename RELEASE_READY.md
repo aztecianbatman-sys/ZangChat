@@ -2,4 +2,4 @@
 
 Windows public release trigger marker.
 
-The production build is verified by CI before the public release job publishes the Windows installer and portable executable.
+Production Electron build validated by CI. This marker exists only to trigger the Windows packaging workflow for the public release.
