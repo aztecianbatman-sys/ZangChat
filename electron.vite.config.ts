@@ -4,10 +4,23 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  main: { plugins: [externalizeDepsPlugin()] },
-  preload: { plugins: [externalizeDepsPlugin()] },
+  main: {
+    plugins: [externalizeDepsPlugin()],
+  },
+  preload: {
+    build: {
+      rollupOptions: {
+        input: resolve('src/main/preload.ts'),
+      },
+    },
+    plugins: [externalizeDepsPlugin()],
+  },
   renderer: {
-    resolve: { alias: { '@renderer': resolve('src/renderer') } },
+    resolve: {
+      alias: {
+        '@renderer': resolve('src/renderer'),
+      },
+    },
     plugins: [react(), tailwindcss()],
   },
 });
