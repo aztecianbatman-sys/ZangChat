@@ -21,7 +21,7 @@ The app has a three-zone desktop frame:
 - **Chat:** channels, text messages, code/lobby/media message cards, presence data, and composer.
 - **Nexus Toolkit:** developer and game context surfaces.
 
-Supabase currently provides the real database, authentication, RLS, and Realtime layer.
+Supabase provides the real database, authentication, RLS, and Realtime layer.
 
 ## Supabase schema
 
@@ -42,11 +42,11 @@ The app uses a publishable key only. Never put a service-role or secret key in t
 4. Run npm install.
 5. Run npm run dev.
 
-Use npm run typecheck for a TypeScript check and npm run build for an Electron/Vite production build.
+Use npm run typecheck for a TypeScript check and npm run build for a production Electron/Vite build.
 
 ## Architecture
 
-The Electron main process owns the Supabase client and exposes a narrow typed API through contextBridge. The renderer has nodeIntegration disabled and does not receive arbitrary ipcRenderer access.
+The Electron main process owns the Supabase client and exposes a narrow API through contextBridge. The renderer has nodeIntegration disabled and does not receive arbitrary ipcRenderer access.
 
 Database operations are explicit IPC handlers; arbitrary SQL is never exposed to the renderer.
 
@@ -60,14 +60,15 @@ Database operations are explicit IPC handlers; arbitrary SQL is never exposed to
 - Profiles, channels, messages, and presence.
 - Realtime channel subscriptions.
 - Text/code/lobby/media message presentation.
+- Proximity presence visualization.
 - Nexus Toolkit UI.
 
 **Developer notes**
 - Electron pinned to 37.2.6.
 - Supabase publishable key only.
 - RLS enabled on all public application tables.
-- The Auth profile trigger uses SECURITY DEFINER only for account creation and has direct EXECUTE revoked for public, anon, and authenticated roles.
-- Realtime currently uses Postgres Changes for persisted message/presence rows.
+- Auth profile trigger hardened after the security advisor check.
+- Database grants tightened to the privileges used by the app.
 
 ## Honest gaps
 
