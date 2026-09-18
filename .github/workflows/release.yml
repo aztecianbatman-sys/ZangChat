@@ -2,8 +2,8 @@ name: ZangChat Windows Release
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   windows:
+    if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'release: publish v0.1.1'
     runs-on: windows-latest
 
     steps:
@@ -29,25 +30,42 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
-      - name: Build Electron renderer/main/preload bundles
+      - name: Build Electron bundles
         run: npm run build
 
       - name: Package Windows app
         run: npm run package:win
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Windows artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ZangChat-Windows
+          name: ZangChat-Windows-v0.1.1
           path: release/*
           if-no-files-found: error
 
-      - name: Publish GitHub release on version tag
-        if: startsWith(github.ref, 'refs/tags/v')
+      - name: Publish public GitHub release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: v0.1.1
+          target_commitish: main
+          name: ZangChat v0.1.1
+          body: |
+            # ZangChat v0.1.1
+
+            Windows desktop build of ZangChat with the ObsidianUI v1 foundation.
+
+            ## Included
+
+            - Windows x64 NSIS installer
+            - Windows x64 portable executable
+            - Production Electron renderer (no localhost dependency)
+            - Supabase authentication, database, RLS, and Realtime foundation
+
+            ## Build fixes
+
+            - Correct Electron main entry path
+            - Correct preload bundle path
+            - Production renderer uses Electron loadFile()
           files: release/*
-          generate_release_notes: true
+          generate_release_notes: false
           draft: false
