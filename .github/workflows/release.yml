@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   windows:
-    if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'release: publish v0.1.1'
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.head_commit.message, 'release: publish v0.1.1')
     runs-on: windows-latest
 
     steps:
@@ -22,10 +22,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --no-audit --no-fund
 
       - name: Typecheck
         run: npm run typecheck
@@ -58,7 +57,7 @@ jobs:
 
             - Windows x64 NSIS installer
             - Windows x64 portable executable
-            - Production Electron renderer (no localhost dependency)
+            - Production Electron renderer with no localhost dependency
             - Supabase authentication, database, RLS, and Realtime foundation
 
             ## Build fixes
